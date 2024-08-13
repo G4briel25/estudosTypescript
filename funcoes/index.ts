@@ -7,7 +7,7 @@ withReturn();
 
 
 // Callback como argumento
-function greeting(name: string) {
+function imprimir(name: string) {
     console.log(`Olá ${name}`);
 }
 
@@ -20,8 +20,8 @@ function preGreeting(f: (name: string) => string, userName: string) {
 
 }
 
-preGreeting(greeting, "Fulano");
-preGreeting(greeting, "Teste123");
+//preGreeting(imprimir, "Fulano");
+//preGreeting(imprimir, "Teste123");
 
 
 
@@ -168,3 +168,9 @@ function showProductDetails2({name, price}: {name: string, price: number}): stri
 
 const shirt2 = {name: "Camisa 2", price: 89.92};
 console.log(showProductDetails2(shirt2));
+
+
+function destruturarEmTS( {idade, profissao}: {idade: number, profissao: string}): string {
+    return `Minha idade é ${idade} e minha profissao é ${profissao}`;
+}
+console.log(destruturarEmTS({idade: 20, profissao: "dev"}));

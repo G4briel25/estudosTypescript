@@ -5,7 +5,7 @@ function withReturn() {
 }
 withReturn();
 // Callback como argumento
-function greeting(name) {
+function imprimir(name) {
     console.log(`Olá ${name}`);
 }
 function preGreeting(f, userName) {
@@ -13,8 +13,8 @@ function preGreeting(f, userName) {
     const greet = f(userName);
     greet;
 }
-preGreeting(greeting, "Fulano");
-preGreeting(greeting, "Teste123");
+//preGreeting(imprimir, "Fulano");
+//preGreeting(imprimir, "Teste123");
 // Generic function
 function firstElement(arr) {
     return arr[0];
@@ -113,3 +113,7 @@ function showProductDetails2({ name, price }) {
 }
 const shirt2 = { name: "Camisa 2", price: 89.92 };
 console.log(showProductDetails2(shirt2));
+function destruturarEmTS({ idade, profissao }) {
+    return `Minha idade é ${idade} e minha profissao é ${profissao}`;
+}
+console.log(destruturarEmTS({ idade: 20, profissao: "dev" }));
