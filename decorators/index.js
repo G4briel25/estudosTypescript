@@ -15,13 +15,11 @@ function meuDecorator(target, propertKey, descriptor) {
     };
 }
 class myClasse {
+    //@meuDecorator()
     testando() {
         console.log("Terminando execução de método");
     }
 }
-__decorate([
-    meuDecorator()
-], myClasse.prototype, "testando", null);
 const myClasse1 = new myClasse();
 myClasse1.testando();
 console.log("--------------------------------------------------------");
@@ -177,4 +175,64 @@ console.log(newBook);
 console.log(newBook.createdAt);
 console.log(newPen);
 console.log("------------------------------------------------------------");
-// 
+// Exemplo real method decorator
+function checkIfUserPosted() {
+    return function (target, key, descriptor) {
+        const childFunction = descriptor.value;
+        console.log(childFunction);
+        descriptor.value = function (...args) {
+            if (args[1] === true) {
+                console.log("O usuário já postou!");
+                return null;
+            }
+            else {
+                return childFunction.apply(this, args);
+            }
+        };
+    };
+}
+class Post {
+    constructor() {
+        this.alreadyPosted = false;
+    }
+    post(_content, _alreadyPosted) {
+        this.alreadyPosted = true;
+        console.log(`Post do usuário: ${_content}`);
+    }
+}
+__decorate([
+    checkIfUserPosted()
+], Post.prototype, "post", null);
+const newPost = new Post();
+newPost.post("Meu primeiro post!", newPost.alreadyPosted);
+newPost.post("Meu segundo post!", newPost.alreadyPosted);
+console.log('---------------------------------------------------------------');
+// Exemplo real: Property Decorator
+function Max(limit) {
+    return function (target, propertyKey) {
+        let value;
+        const getter = function () {
+            return value;
+        };
+        const setter = function (newVal) {
+            if (newVal.length > limit) {
+                console.log(`O valor deve ter o máximo ${limit} dígitos`);
+                return;
+            }
+            else {
+                value = newVal;
+            }
+        };
+        Object.defineProperty(target, propertyKey, { get: getter, set: setter });
+    };
+}
+class Admin {
+    constructor(_userName) {
+        this.userName = _userName;
+    }
+}
+__decorate([
+    Max(10)
+], Admin.prototype, "userName", void 0);
+const admin1 = new Admin("gabriel1234"); // Saida: O valor deve ter o máximo 10 dígitos
+console.log(admin1);

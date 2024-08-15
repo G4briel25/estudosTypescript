@@ -15,7 +15,7 @@ function meuDecorator(target: any, propertKey: string, descriptor: PropertyDescr
 }
 
 class myClasse {
-    @meuDecorator()
+    //@meuDecorator()
     testando() {
         console.log("Terminando execução de método");        
     }
@@ -229,4 +229,71 @@ console.log(newPen);
 
 
 console.log("------------------------------------------------------------");
-// 
+// Exemplo real method decorator
+function checkIfUserPosted() {
+    return function(target: Object, key: string | Symbol, descriptor: PropertyDescriptor) {
+        const childFunction = descriptor.value;
+        console.log(childFunction);
+        descriptor.value = function(...args: any[]) {
+            if(args[1] === true) {
+                console.log("O usuário já postou!");
+                return null;
+            } else {
+                return childFunction.apply(this, args);
+            }
+        }
+    }
+
+}
+
+
+class Post {
+    alreadyPosted = false;
+
+    @checkIfUserPosted()
+    post(_content: string, _alreadyPosted: boolean) {
+        this.alreadyPosted = true;
+        console.log(`Post do usuário: ${_content}`);
+    }
+}
+
+const newPost = new Post();
+newPost.post("Meu primeiro post!", newPost.alreadyPosted);
+newPost.post("Meu segundo post!", newPost.alreadyPosted);
+
+
+
+console.log('---------------------------------------------------------------');
+// Exemplo real: Property Decorator
+function Max(limit: number) {
+    return function(target: Object, propertyKey: string) {
+        let value: string;
+        
+        const getter = function() {
+            return value;
+        }
+
+        const setter = function(newVal: string) {
+            if(newVal.length > limit) {
+                console.log(`O valor deve ter o máximo ${limit} dígitos`);
+                return
+            } else {
+                value = newVal
+            }
+        }
+
+        Object.defineProperty(target, propertyKey, {get: getter, set: setter})
+    }
+}
+
+class Admin {
+    @Max(10)
+    userName;
+
+    constructor(_userName: string) {
+        this.userName = _userName;
+    }
+}
+
+const admin1 = new Admin("gabriel1234"); // Saida: O valor deve ter o máximo 10 dígitos
+console.log(admin1);
